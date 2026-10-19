@@ -4,10 +4,29 @@ A browser app that opens AutoCAD drawings (DXF), shows them in full detail and l
 edit and save them. It was built **clean-room from the public file specifications**
 (Autodesk *DXF Reference*). No AutoCAD binaries were inspected or decompiled.
 
+## Download and install (Windows)
+
+1. Open the **[latest release](https://github.com/JaySPX05/vectra-cad/releases/latest)**. Older versions are on the
+   [Releases page](https://github.com/JaySPX05/vectra-cad/releases).
+2. Under **Assets**, download **`Vectra-CAD-Setup-<version>.exe`** (about 120 MB).
+3. Run it. If Windows SmartScreen says "Windows protected your PC", click **More info → Run anyway**. The installer
+   isn't code-signed, so Windows shows this for any unsigned download.
+4. Follow the setup wizard. It installs for your user account only, so no admin rights are needed, and you can choose the folder.
+5. Start **Vectra CAD** from the Start menu or the desktop shortcut. Double-clicking a **.dxf** or **.dwg** file also opens it.
+
+**Requirements:** Windows 10 or 11, 64-bit. After installing, it works fully offline.
+
+**Updating:** download and run the newer installer; it replaces the installed version. Each release's notes say
+what changed (also in [`CHANGELOG.md`](CHANGELOG.md)).
+
+**Uninstalling:** Settings → Apps → Installed apps → **Vectra CAD** → Uninstall.
+
+**From source** (any OS, runs in the browser):
+
 ```bash
 npm install
 npm run dev          # http://localhost:5173 — open a .dxf (Open / drag & drop / Samples)
-npm test             # 94 unit tests: lossless round-trip, renderer/transform agreement, editing
+npm test             # unit tests: lossless round-trip, renderer/transform agreement, editing, dimensions
 ```
 
 Optional Python tooling (an independent DXF implementation, used for samples and validation):
@@ -23,10 +42,8 @@ npm run check:browser                # drives the running dev server (port 5199)
 
 ## Desktop app (Windows, works offline)
 
-**Install:** download `Vectra-CAD-Setup-<version>.exe` from the
-[Releases page](https://github.com/JaySPX05/vectra-cad/releases/latest) and run it. It installs per-user (no admin needed), adds Start-menu and
-desktop shortcuts, and registers **.dxf** and **.dwg**, so double-clicking a drawing opens it in Vectra CAD.
-The installer is unsigned, so Windows SmartScreen may ask you to confirm ("More info → Run anyway").
+**Install:** see [Download and install](#download-and-install-windows). The installer adds Start-menu and desktop
+shortcuts and registers **.dxf** and **.dwg**, so double-clicking a drawing opens it in Vectra CAD.
 
 **Behaviour:**
 - **Offline:** no internet is used or allowed. The app is served from a private `app://` scheme, and every network
