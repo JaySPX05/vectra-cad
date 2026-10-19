@@ -23,7 +23,8 @@ npm run check:browser                # drives the running dev server (port 5199)
 
 ## Desktop app (Windows, works offline)
 
-**Install:** run `release\Vectra-CAD-Setup-0.1.0.exe`. It installs per-user (no admin needed), adds Start-menu and
+**Install:** download `Vectra-CAD-Setup-<version>.exe` from the
+[Releases page](https://github.com/JaySPX05/vectra-cad/releases/latest) and run it. It installs per-user (no admin needed), adds Start-menu and
 desktop shortcuts, and registers **.dxf** and **.dwg**, so double-clicking a drawing opens it in Vectra CAD.
 The installer is unsigned, so Windows SmartScreen may ask you to confirm ("More info → Run anyway").
 
@@ -45,6 +46,14 @@ npm run app            # build and run the desktop app from source
 npm run dist:win       # build the installer -> release/Vectra-CAD-Setup-<version>.exe
 npm run check:electron # end-to-end test of the desktop app (open, save in place, DWG, offline)
 ```
+
+**Releasing.** Every new feature ships as a new version on the Releases page, with notes from `CHANGELOG.md`:
+
+1. Bump the version: `npm version minor --no-git-tag-version` for features, or `patch` for fixes.
+2. Add a `## <new version>` section at the top of `CHANGELOG.md` describing the changes.
+3. Commit and `git push`.
+4. `npm run release` builds the installer, tags `v<version>`, creates the GitHub release and uploads the installer.
+   It refuses to run on uncommitted or unpushed code, or for a version that is already released.
 
 The desktop shell is in `electron/`: `main.mjs` (window, `app://` server, dialogs, menus) and `preload.cjs`
 (the only bridge the page can use). The page uses it through `src/desktop.ts`, and runs unchanged in a browser.
