@@ -1,0 +1,100 @@
+{
+  "name": "vectra-cad",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "samples": ".venv/Scripts/python -I scripts/gen_samples.py public/samples",
+    "validate": ".venv/Scripts/python -I scripts/validate.py",
+    "check:browser": "node scripts/browser_check.mjs test-output/screens && node scripts/browser_edit_check.mjs test-output/screens && node scripts/browser_3d_check.mjs test-output/screens3d && node scripts/browser_dims_check.mjs test-output/screens_dims && node scripts/browser_fonts_check.mjs test-output/screens_fonts && node scripts/browser_dimtxt_check.mjs test-output/screens_dimtxt && node scripts/browser_dimmenu_check.mjs test-output/screens_dimmenu && node scripts/browser_dimdyn_check.mjs test-output/screens_dimdyn && node scripts/browser_dwg_check.mjs test-output/screens_dwg",
+    "app": "vite build && electron .",
+    "app:dev": "electron .",
+    "dist:win": "vite build && electron-builder --win nsis --x64",
+    "icon": ".venv/Scripts/python -I scripts/make_icon.py",
+    "check:electron": "vite build && node scripts/electron_check.mjs test-output/electron"
+  },
+  "devDependencies": {
+    "@mlightcad/libredwg-web": "0.8.1",
+    "@types/node": "^22.15.30",
+    "electron": "44.5.1",
+    "electron-builder": "26.16.1",
+    "playwright-core": "^1.52.0",
+    "typescript": "5.8.3",
+    "vite": "6.3.5",
+    "vitest": "3.2.4"
+  },
+  "license": "GPL-3.0-or-later",
+  "productName": "Vectra CAD",
+  "description": "DXF/DWG viewer and editor that works offline",
+  "author": "Vectra CAD",
+  "main": "electron/main.mjs",
+  "build": {
+    "appId": "local.vectracad.app",
+    "productName": "Vectra CAD",
+    "copyright": "GPL-3.0-or-later",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**",
+      "electron/**",
+      "build/icon.png",
+      "LICENSE",
+      "THIRD_PARTY_NOTICES.md",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "LICENSE",
+        "to": "LICENSE"
+      },
+      {
+        "from": "THIRD_PARTY_NOTICES.md",
+        "to": "THIRD_PARTY_NOTICES.md"
+      }
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Vectra CAD",
+      "license": "LICENSE",
+      "artifactName": "Vectra-CAD-Setup-${version}.${ext}"
+    },
+    "fileAssociations": [
+      {
+        "ext": "dxf",
+        "name": "VectraCAD.DXF",
+        "description": "DXF drawing",
+        "role": "Editor",
+        "icon": "build/icon.ico"
+      },
+      {
+        "ext": "dwg",
+        "name": "VectraCAD.DWG",
+        "description": "DWG drawing",
+        "role": "Viewer",
+        "icon": "build/icon.ico"
+      }
+    ]
+  }
+}
