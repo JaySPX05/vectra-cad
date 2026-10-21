@@ -1,7 +1,7 @@
 {
   "name": "vectra-cad",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "samples": ".venv/Scripts/python -I scripts/gen_samples.py public/samples",
     "validate": ".venv/Scripts/python -I scripts/validate.py",
-    "check:browser": "node scripts/browser_check.mjs test-output/screens && node scripts/browser_edit_check.mjs test-output/screens && node scripts/browser_3d_check.mjs test-output/screens3d && node scripts/browser_dims_check.mjs test-output/screens_dims && node scripts/browser_fonts_check.mjs test-output/screens_fonts && node scripts/browser_dimtxt_check.mjs test-output/screens_dimtxt && node scripts/browser_dimmenu_check.mjs test-output/screens_dimmenu && node scripts/browser_dimdyn_check.mjs test-output/screens_dimdyn && node scripts/browser_dwg_check.mjs test-output/screens_dwg",
+    "check:browser": "node scripts/browser_check.mjs test-output/screens && node scripts/browser_edit_check.mjs test-output/screens && node scripts/browser_3d_check.mjs test-output/screens3d && node scripts/browser_dims_check.mjs test-output/screens_dims && node scripts/browser_fonts_check.mjs test-output/screens_fonts && node scripts/browser_dimtxt_check.mjs test-output/screens_dimtxt && node scripts/browser_dimmenu_check.mjs test-output/screens_dimmenu && node scripts/browser_dimdyn_check.mjs test-output/screens_dimdyn && node scripts/browser_dwg_check.mjs test-output/screens_dwg && node scripts/browser_panels_check.mjs test-output/screens_panels",
     "app": "vite build && electron .",
     "app:dev": "electron .",
     "dist:win": "vite build && electron-builder --win nsis --x64",

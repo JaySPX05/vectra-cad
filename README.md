@@ -266,14 +266,19 @@ The viewer also handles layers (on/off, freeze, colour), ACI and true colour, li
 
 **Inspecting.**
 
-- Properties panel with computed geometry (length, area, radius…).
+- Properties panel with computed geometry (length, area, radius…). It floats over the right edge of the drawing and opens
+  only when something is selected; `×` closes it until the next selection. **Ctrl+1**, the toolbar **Properties** toggle or
+  `PROPERTIES` (`PR`) keep it open, showing drawing information when nothing is selected.
+- The Layers / Drawing database column can be hidden with the toolbar **Layers** toggle, its `«` button or **Ctrl+2**
+  (remembered between sessions); `LAYER` (`LA`) brings it back. In a browser tab, Ctrl+1 / Ctrl+2 switch tabs, so use the
+  toolbar toggles there.
 - Every DXF group shown with its meaning, and **editable in place**.
 - Handle links let you follow owners and references (block records, dictionaries…).
 - Explorer for header variables, tables, blocks, objects, and entity counts by type.
 
 **Editing** (all undoable, and saved back to the file's own DXF version):
 
-- AutoCAD-style command line: `LINE PLINE RECTANG CIRCLE ARC TEXT MOVE COPY ROTATE SCALE ERASE UNDO REDO ZOOM DIST ID LIST LAYER REGEN HELP`.
+- AutoCAD-style command line: `LINE PLINE RECTANG CIRCLE ARC TEXT MOVE COPY ROTATE SCALE ERASE UNDO REDO ZOOM DIST ID LIST LAYER PROPERTIES REGEN HELP`.
 - Coordinate input: `x,y`, `@dx,dy`, `@d<angle`, or direct distance entry.
 - Object snaps: end, mid, center, quadrant, intersection, insertion, node.
 - ORTHO (F8), OSNAP (F3).

@@ -59,18 +59,29 @@ body {
 .toolbar .toggle { font-size: 12px; padding: 4px 9px; }
 
 /* workspace */
-.workspace { display: grid; grid-template-columns: 270px 1fr 340px; min-height: 0; }
+.workspace { display: grid; grid-template-columns: 270px 1fr; min-height: 0; }
+.workspace.left-hidden { grid-template-columns: 1fr; }
+.workspace.left-hidden .side.left { display: none; }
 .side { display: flex; flex-direction: column; min-height: 0; background: var(--panel); }
 .side.left { border-right: 1px solid var(--line); }
-.side.right { border-left: 1px solid var(--line); }
 .panel { display: flex; flex-direction: column; min-height: 0; }
 .panel.layers { flex: 0 0 38%; border-bottom: 1px solid var(--line); }
 .panel.explorer, .panel.props { flex: 1; }
 .panel-title {
+  display: flex; align-items: center; justify-content: space-between; gap: 6px;
   margin: 0; padding: 7px 10px; font-size: 11px; font-weight: 600; text-transform: uppercase;
   letter-spacing: 0.6px; color: var(--dim); border-bottom: 1px solid var(--line);
 }
 .panel-body { overflow: auto; flex: 1; padding: 4px 0 10px; }
+.panel-x { width: 20px; height: 18px; font-size: 14px; line-height: 1; border-radius: 3px; margin: -3px -4px; }
+.panel-x:hover { color: var(--text); background: var(--panel-2); }
+/* Properties floats over the right edge of the drawing, so selecting never resizes the canvas */
+.panel.props.floating {
+  position: absolute; z-index: 20; top: 8px; right: 8px; bottom: 8px; width: min(340px, calc(100% - 16px));
+  background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  overflow: hidden; cursor: default;
+}
+.panel.props.floating[hidden] { display: none; }
 .center { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
 .viewport-wrap { position: relative; flex: 1; min-height: 0; overflow: hidden; }
 .viewport { display: block; cursor: none; }
@@ -174,10 +185,11 @@ details.child summary { cursor: pointer; color: var(--dim); font-size: 12px; pad
 .aci:hover { outline: 2px solid var(--accent); z-index: 1; }
 
 @media (max-width: 1100px) {
-  .workspace { grid-template-columns: 220px 1fr 280px; }
+  .workspace { grid-template-columns: 220px 1fr; }
+  .panel.props.floating { width: min(290px, calc(100% - 16px)); }
 }
 @media (max-width: 800px) {
-  .workspace { grid-template-columns: 1fr; grid-template-rows: 1fr; }
+  .workspace, .workspace.left-hidden { grid-template-columns: 1fr; grid-template-rows: 1fr; }
   .side { display: none; }
 }
 

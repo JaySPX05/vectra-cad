@@ -4,6 +4,16 @@ Each version is a GitHub release with the Windows installer attached
 (https://github.com/JaySPX05/vectra-cad/releases). New features go into a new version:
 see "Releasing" in the README.
 
+## 0.2.0 — more drawing space
+
+- **Properties pops up only when something is selected.** It floats over the right edge of the drawing, so selecting
+  an object no longer resizes the view. `×` closes it until the next selection; Esc clears the selection and closes it.
+- **Ctrl+1**, the toolbar **Properties** toggle or `PROPERTIES` (`PR`) keep Properties open (drawing information when
+  nothing is selected).
+- **The Layers / Drawing database column can be hidden**: the toolbar **Layers** toggle, the `«` button in its title,
+  or **Ctrl+2**. The choice is remembered; `LAYER` (`LA`) shows it again.
+- Both are also in the desktop app's **View** menu.
+
 ## 0.1.0 — first release
 
 **Viewing**

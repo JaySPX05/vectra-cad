@@ -327,8 +327,15 @@ const COMMANDS: CommandDef[] = [
     },
   },
   {
-    name: 'LAYER', aliases: ['LA', 'CLAYER'], help: 'Set the current layer (created if missing)',
+    name: 'PROPERTIES', aliases: ['PR', 'PROPS', 'CH'], help: 'Show the Properties panel (Ctrl+1)',
     async run(app) {
+      app.showPanel('properties');
+    },
+  },
+  {
+    name: 'LAYER', aliases: ['LA', 'CLAYER'], help: 'Set the current layer (created if missing); shows the Layers panel',
+    async run(app) {
+      app.showPanel('layers');
       const name = await app.getText(`Enter layer name to make current <${app.currentLayer}>`, app.currentLayer);
       if (!name) return;
       if (!app.doc.layer(name)) {

@@ -118,6 +118,8 @@ export class App {
   /** A non-selected record shown in the inspector (table entry, object, block...). */
   inspected: DxfRecord | null = null;
   log: (msg: string, cls?: string) => void = () => {};
+  /** Open a side panel (set by the page layout; PROPERTIES / LAYER commands). */
+  showPanel: (which: 'properties' | 'layers') => void = () => {};
 
   private needsDraw = false;
   private box: { x0: number; y0: number; x1: number; y1: number; dragged: boolean } | null = null;
@@ -846,6 +848,7 @@ export class App {
       this.cancelPrompt();
       return;
     }
+    if (!this.selection.size && this.inspected) return this.inspect(null);
     this.clearSelection();
   }
 }

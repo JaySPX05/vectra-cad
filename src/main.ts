@@ -94,6 +94,27 @@ const toggle = (label: string, title: string, get: () => boolean, set: (v: boole
 const snapT = toggle('OSNAP', 'Object snap (F3)', () => app.snapOn, (v) => (app.snapOn = v));
 const orthoT = toggle('ORTHO', 'Ortho mode (F8)', () => app.orthoOn, (v) => (app.orthoOn = v));
 const lwT = toggle('LWT', 'Show lineweights', () => app.lineweights, (v) => (app.lineweights = v));
+// Side panels. Layers + Drawing database is a column that can be hidden (remembered);
+// Properties floats over the drawing and opens when something is selected, or stays open when pinned.
+const LEFT_KEY = 'vectra.leftPanel';
+let leftOpen = true;
+try {
+  leftOpen = localStorage.getItem(LEFT_KEY) !== '0';
+} catch { /* storage blocked: default */ }
+let propsPinned = false;
+let propsClosed = false; // closed with × until the selection changes
+const setLeft = (v: boolean) => {
+  leftOpen = v;
+  try { localStorage.setItem(LEFT_KEY, v ? '1' : '0'); } catch { /* not remembered */ }
+  syncPanels();
+};
+const setPinned = (v: boolean) => {
+  propsPinned = v;
+  propsClosed = false;
+  syncPanels();
+};
+const leftT = toggle('Layers', 'Show or hide the Layers and Drawing database panel (Ctrl+2)', () => leftOpen, setLeft);
+const propsT = toggle('Properties', 'Keep the Properties panel open (Ctrl+1). Otherwise it opens when something is selected.', () => propsPinned, setPinned);
 const themeT = toggle('◐', 'Dark / light background', () => app.dark, (v) => {
   app.dark = v;
   document.documentElement.dataset.theme = v ? 'dark' : 'light';
@@ -195,13 +216,39 @@ const toolbar = h('header.toolbar',
   h('span.grow'),
   ucsSel, viewSel, styleSel, orbitBtn,
   h('button.tbtn', { title: 'Zoom extents (double-click wheel)', onclick: () => app.zoomExtents() }, 'Extents'),
+  h('span.sep'), leftT.el, propsT.el,
   fileInput,
 );
 
 // ---- side panels ---------------------------------------------------------------------------------------
-const panel = (title: string, body: HTMLElement, cls = '') => h('section.panel' + cls, h('h2.panel-title', title), body);
-const left = h('aside.side.left', panel('Layers', layers.el, '.layers'), panel('Drawing database', explorer.el, '.explorer'));
-const right = h('aside.side.right', panel('Properties', props.el, '.props'));
+const panel = (title: string, body: HTMLElement, cls = '', action?: HTMLElement) =>
+  h('section.panel' + cls, h('h2.panel-title', h('span', title), action ?? null), body);
+const left = h('aside.side.left',
+  panel('Layers', layers.el, '.layers', h('button.icon.panel-x', { title: 'Hide panel (Ctrl+2)', onclick: () => setLeft(false) }, '«')),
+  panel('Drawing database', explorer.el, '.explorer'));
+const propsEl = panel('Properties', props.el, '.props.floating',
+  h('button.icon.panel-x', { title: 'Close (opens again on the next selection)', onclick: () => { propsPinned = false; propsClosed = true; syncPanels(); } }, '×'));
+viewportWrap.append(propsEl);
+const workspace = h('main.workspace', left, h('div.center', viewportWrap, cmd.el));
+
+function syncPanels() {
+  workspace.classList.toggle('left-hidden', !leftOpen);
+  propsEl.hidden = !(propsPinned || ((app.selection.size > 0 || !!app.inspected) && !propsClosed));
+  leftT.sync();
+  propsT.sync();
+}
+// a new selection reopens Properties after ×; edits that keep the same selection don't
+let lastSel: unknown[] = [];
+const selectionChanged = () => {
+  const now = [app.inspected, ...app.selection];
+  if (now.length !== lastSel.length || now.some((r, i) => r !== lastSel[i])) propsClosed = false;
+  lastSel = now;
+  syncPanels();
+};
+app.onSelection.push(selectionChanged);
+app.onInspect.push(selectionChanged);
+app.showPanel = (which) => (which === 'layers' ? setLeft(true) : setPinned(true));
+syncPanels();
 
 // ---- status bar -------------------------------------------------------------------------------------------
 const coords = h('span.coords', '0, 0');
@@ -223,7 +270,7 @@ const updateStatus = () => {
 app.onDocument.push(updateStatus);
 app.onSelection.push(updateStatus);
 
-document.getElementById('app')!.append(toolbar, h('main.workspace', left, h('div.center', viewportWrap, cmd.el), right), status);
+document.getElementById('app')!.append(toolbar, workspace, status);
 
 // ---- file loading -----------------------------------------------------------------------------------------
 async function openFile(f: File) {
@@ -306,6 +353,8 @@ window.addEventListener('keydown', (e) => {
   if (mod && k.toLowerCase() === 's') { e.preventDefault(); app.save(e.shiftKey); return; }
   if (mod && k.toLowerCase() === 'o') { e.preventDefault(); openDialog(); return; }
   if (mod && k.toLowerCase() === 'a') { e.preventDefault(); cmd.run('SELECTALL'); return; }
+  if (mod && k === '1') { e.preventDefault(); propsT.el.click(); return; }
+  if (mod && k === '2') { e.preventDefault(); leftT.el.click(); return; }
   if (k === 'F3') { e.preventDefault(); app.snapOn = !app.snapOn; snapT.sync(); app.log(`<Osnap ${app.snapOn ? 'on' : 'off'}>`); return; }
   if (k === 'F8') { e.preventDefault(); app.orthoOn = !app.orthoOn; orthoT.sync(); app.log(`<Ortho ${app.orthoOn ? 'on' : 'off'}>`); return; }
   if (t === cmd.input) return; // the command line handles its own keys
@@ -349,6 +398,8 @@ if (desktop) {
       case 'selectAll': return cmd.run('SELECTALL');
       case 'zoomExtents': return app.zoomExtents();
       case 'toggleTheme': return themeT.el.click();
+      case 'toggleProperties': return propsT.el.click();
+      case 'toggleLayers': return leftT.el.click();
       case 'help': return cmd.run('HELP');
     }
   });
